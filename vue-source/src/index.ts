@@ -13,9 +13,10 @@ const options = {
     <button @click="changeName">HaHa</button>
     <div v-html="html"></div>
     <div>
-      <h1>{{ deepValue.who }}</h1>
+      <h1 ref="protagonist">{{ deepValue.who }}</h1>
       <p>{{ deepValue.slogan }}</p>
     </div>
+    <button @click="changeColor('red')">Change protagonist's name</>
   `,
   data() {
     return {
@@ -63,6 +64,13 @@ const options = {
       this.age = 20
       // @ts-ignore
       this.buttonName = 'Button has been clicked!'
+    },
+    changeColor(color: string) {
+      // @ts-ignore
+      if (this.$refs.protagonist) {
+        // @ts-ignore
+        this.$refs.protagonist.style.color = color
+      }
     },
   },
 }

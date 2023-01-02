@@ -1,36 +1,16 @@
 import Dep from './dep'
 import Vue from './vue'
 import Watcher from './watcher'
-
-function isElement(node: Node) {
-  return node.nodeType === Node.ELEMENT_NODE
-}
-function isInterpolation(node: Node) {
-  return (
-    node.nodeType === Node.TEXT_NODE &&
-    /\{\{(.*)\}\}/.test(node.textContent || '')
-  )
-}
-
-function isDirective(attrName: string) {
-  return attrName.startsWith('v-')
-}
-
-function isEventHandler(attrName: string) {
-  return attrName.startsWith('@')
-}
-
-function getDeepestValue(obj: { [key: string]: any }, accessChain: string) {
-  accessChain = accessChain.trim()
-  if (accessChain.indexOf('.') === -1) {
-    return obj[accessChain]
-  }
-
-  for (const key of accessChain.split('.')) {
-    obj = obj[key]
-  }
-  return obj
-}
+import {
+  isElement,
+  isInterpolation,
+  isDirective,
+  isEventHandler,
+  getEventName,
+  getFunctionNameWithArgs,
+  isRef,
+  getDeepestValue,
+} from './utils'
 
 export default class Compile {
   constructor(private vm: Vue, frag: DocumentFragment) {
@@ -53,11 +33,20 @@ export default class Compile {
             // @ts-ignore
             this.bindView(node, vValue, vName, attr.value)
           } else if (isEventHandler(attr.name)) {
-            node.addEventListener(
-              attr.name.slice(1),
-              // @ts-ignore
-              this.vm.$options.methods[attr.value.trim()].bind(this.vm)
+            const eventName = getEventName(attr.name)
+            const [handlerName, handlerArgs] = getFunctionNameWithArgs(
+              attr.value
             )
+            node.addEventListener(
+              eventName,
+              // @ts-ignore
+              this.vm.$options.methods[handlerName].bind(
+                this.vm,
+                ...handlerArgs
+              )
+            )
+          } else if (isRef(attr.name)) {
+            this.vm.$refs[attr.value.trim()] = node as HTMLElement
           }
         })
       } else if (isInterpolation(node)) {

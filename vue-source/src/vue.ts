@@ -4,6 +4,7 @@ import Compile from './compile'
 
 export default class Vue {
   $options: VueOptions
+  $refs: { [key: string]: HTMLElement } = {}
 
   constructor(options: VueOptions) {
     this.$options = options

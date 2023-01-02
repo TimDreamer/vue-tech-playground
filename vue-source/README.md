@@ -9,7 +9,8 @@ Trying to implement basic concept of Vue:
 `this.name === this.$options.data.name`
 
 2. For each value of data, make connections with views to implement reactivity.
-3. Implement directives (v-text, v-model, v-html) and event binding (@click).
+3. Add lifecycle (beforeCreate, created, beforeMounted, mounted) and $refs for `ref="xxx"` in template.
+4. Implement directives (v-text, v-model, v-html) and event binding (@click).
 
 ## How to use
 
