@@ -54,6 +54,8 @@ const options = {
   mounted() {
     // @ts-ignore
     console.log('mounted', this.name)
+    // @ts-ignore
+    this.methodNotInView()
   },
   watch: {
     // @ts-ignore
@@ -95,6 +97,9 @@ const options = {
       this.functionWatchTest++
       // @ts-ignore
       this.objectWatchTest++
+    },
+    methodNotInView() {
+      console.log('Not in view', this)
     },
   },
 }

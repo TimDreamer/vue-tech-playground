@@ -13,17 +13,7 @@ export default class Vue {
     if (typeof options?.data === 'function') options.data = options.data()
 
     this.$options.beforeCreate?.call(this)
-    if (options.data)
-      for (const key of Object.keys(options.data)) {
-        Object.defineProperty(this, key, {
-          get() {
-            return this.$options.data[key]
-          },
-          set(newVal) {
-            this.$options.data[key] = newVal
-          },
-        })
-      }
+    this._bindDataMethodsOnVue()
     // add dep for each prop of data
     this._observe(options.data)
     this._handleWatchers()
@@ -74,6 +64,32 @@ export default class Vue {
         value = newVal
       },
     })
+  }
+
+  _bindDataMethodsOnVue() {
+    if (this.$options.data) {
+      for (const key of Object.keys(this.$options.data)) {
+        Object.defineProperty(this, key, {
+          get() {
+            return this.$options.data[key]
+          },
+          set(newVal) {
+            this.$options.data[key] = newVal
+          },
+        })
+      }
+    }
+    if (this.$options.methods) {
+      for (const key of Object.keys(this.$options.methods)) {
+        // @ts-ignore
+        this.$options.methods[key] = this.$options.methods[key].bind(this)
+        Object.defineProperty(this, key, {
+          get() {
+            return this.$options.methods[key]
+          },
+        })
+      }
+    }
   }
 
   _handleWatchers() {
