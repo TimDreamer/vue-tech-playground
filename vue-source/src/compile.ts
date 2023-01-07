@@ -50,12 +50,18 @@ export default class Compile {
           }
         })
       } else if (isInterpolation(node)) {
+        const oriTextContent = node.textContent as string
         Dep.target = new Watcher((newVal) => {
-          this.bindView(node, newVal, 'text')
+          this.bindView(node, newVal, 'text', oriTextContent)
         })
         // @ts-ignore
         // trigger this.vm[RegExp.$1] get func, then trigger this.vm.$options.data[RegExp.$1] get func, will add Dep.target in dep
-        this.bindView(node, getDeepestValue(this.vm, RegExp.$1), 'text')
+        this.bindView(
+          node,
+          getDeepestValue(this.vm, RegExp.$1),
+          'text',
+          oriTextContent
+        )
       }
 
       // Even work for v-html, cause v-html add childNodes under the node,
@@ -70,8 +76,11 @@ export default class Compile {
     if (updateFnc) updateFnc(node, val, key)
   }
 
-  textUpdate(node: Node, value: Function | string) {
-    node.textContent = typeof value === 'function' ? value() : value
+  textUpdate(node: Node, value: Function | string, oriTextContent: string) {
+    node.textContent = oriTextContent.replace(
+      /\{\{.*\}\}/,
+      typeof value === 'function' ? value() : value
+    )
   }
 
   htmlUpdate(node: Element, value: Function | string) {

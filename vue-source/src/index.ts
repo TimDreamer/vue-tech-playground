@@ -17,8 +17,8 @@ const options = {
       <p>{{ deepValue.slogan }}</p>
     </div>
     <button @click="changeColor('red')">Change protagonist's name</button>
-    <p> {{ functionWatchTest }} </p>
-    <p> {{ objectWatchTest }} </p>
+    <p> functionWatch: {{ functionWatchTest }} </p>
+    <p> objectWatch: {{ objectWatchTest }} </p>
     <button @click="triggerWatchers">trigger Watchers</button>
   `,
   data() {
