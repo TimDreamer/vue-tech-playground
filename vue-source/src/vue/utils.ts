@@ -1,3 +1,11 @@
+export function isChildComponent(components: Object, nodeName: string) {
+  if (!components || typeof components !== 'object' || !nodeName) return false
+
+  return Object.keys(components).some(
+    (key) => key.toLowerCase() === nodeName.toLowerCase()
+  )
+}
+
 export function isElement(node: Node) {
   return node.nodeType === Node.ELEMENT_NODE
 }

@@ -1,7 +1,9 @@
+import { VueOptions } from './type'
 import Dep from './dep'
-import Vue from './vue'
+import Vue from '.'
 import Watcher from './watcher'
 import {
+  isChildComponent,
   isElement,
   isInterpolation,
   isDirective,
@@ -23,6 +25,22 @@ export default class Compile {
   parse(frag: Node) {
     frag.childNodes.forEach((node) => {
       if (isElement(node)) {
+        if (isChildComponent(this.vm.$options.components, node.nodeName)) {
+          for (const [key, options] of Object.entries(
+            this.vm.$options.components
+          )) {
+            if (key.toLowerCase() === node.nodeName.toLowerCase()) {
+              const div = document.createElement('div')
+              const child = new Vue(options as VueOptions, this.vm)
+              this.vm.$children.push(child)
+              child.$mount(div)
+              node.replaceWith(div)
+              break
+            }
+          }
+          return
+        }
+
         Array.from((node as Element).attributes).forEach((attr) => {
           if (isDirective(attr.name)) {
             const vName = attr.name.slice(2)

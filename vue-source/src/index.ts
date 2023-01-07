@@ -1,4 +1,5 @@
 import Vue from './vue'
+import Child from './components/Child'
 
 const options = {
   el: '#app',
@@ -20,7 +21,11 @@ const options = {
     <p> functionWatch: {{ functionWatchTest }} </p>
     <p> objectWatch: {{ objectWatchTest }} </p>
     <button @click="triggerWatchers">trigger Watchers</button>
+    <child />
   `,
+  components: {
+    Child,
+  },
   data() {
     return {
       name: 'I am test.',

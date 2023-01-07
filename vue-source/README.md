@@ -12,6 +12,7 @@ Trying to implement basic concept of Vue:
 3. Add lifecycle (beforeCreate, created, beforeMounted, mounted) and $refs for `ref="xxx"` in template.
 4. Implement directives (v-text, v-model, v-html) and event binding (@click).
 5. Support watch (function or object), object option only support immediate for the time being.
+6. Support Child components
 
 ## How to use
 

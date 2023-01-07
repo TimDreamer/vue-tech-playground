@@ -6,8 +6,9 @@ import Watcher from './watcher'
 export default class Vue {
   $options: VueOptions
   $refs: { [key: string]: HTMLElement } = {}
+  $children: Vue[] = []
 
-  constructor(options: VueOptions) {
+  constructor(options: VueOptions, public $parent?: Vue) {
     this.$options = options
 
     if (typeof options?.data === 'function') options.data = options.data()
@@ -18,7 +19,6 @@ export default class Vue {
     this._observe(options.data)
     this._handleWatchers()
     this.$options.created?.call(this)
-
     // If el exists, auto mount to the DOM.
     if (this.$options.el) this.$mount(this.$options.el)
   }
