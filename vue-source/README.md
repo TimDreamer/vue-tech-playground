@@ -4,6 +4,8 @@
 
 Trying to implement basic concept of Vue:
 
+## What this repo can do
+
 1. vueInstance can access data directly.
 
 `this.name === this.$options.data.name`
