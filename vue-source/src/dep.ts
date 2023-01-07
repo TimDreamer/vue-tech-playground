@@ -9,7 +9,7 @@ export default class Dep {
     this.deps.push(watcher)
   }
 
-  notify(newVal: any) {
-    this.deps.forEach((dep) => dep.update(newVal))
+  notify(newVal: any, oldVal?: any) {
+    this.deps.forEach((dep) => dep.update(newVal, oldVal))
   }
 }

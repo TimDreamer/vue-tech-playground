@@ -1,7 +1,7 @@
 export default class Watcher {
-  constructor(private cb: (newVal: any) => void) {}
+  constructor(private cb: (newVal: any, oldVal?: any) => void) {}
 
-  update(newVal: any) {
-    this.cb(newVal)
+  update(newVal: any, oldVal?: any) {
+    this.cb(newVal, oldVal)
   }
 }

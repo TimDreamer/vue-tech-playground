@@ -1,6 +1,7 @@
 import { VueOptions } from './type'
 import Dep from './dep'
 import Compile from './compile'
+import Watcher from './watcher'
 
 export default class Vue {
   $options: VueOptions
@@ -25,6 +26,7 @@ export default class Vue {
       }
     // add dep for each prop of data
     this._observe(options.data)
+    this._handleWatchers()
     this.$options.created?.call(this)
 
     // If el exists, auto mount to the DOM.
@@ -68,9 +70,36 @@ export default class Vue {
         return value
       },
       set(newVal) {
+        dep && dep.notify(newVal, value)
         value = newVal
-        dep && dep.notify(newVal)
       },
     })
+  }
+
+  _handleWatchers() {
+    if (!this.$options.watch) return
+    for (const [key, value] of Object.entries(this.$options.watch)) {
+      if (typeof value === 'function') {
+        // @ts-ignore
+        Dep.target = new Watcher(value.bind(this))
+        // @ts-ignore
+        this[key]
+      } else if (typeof value === 'object') {
+        // @ts-ignore
+        if (!value.handler) {
+          return
+        }
+        // @ts-ignore
+        Dep.target = new Watcher(value.handler.bind(this))
+        // @ts-ignore
+        if (value.immediate) {
+          // @ts-ignore
+          value.handler(this[key])
+        } else {
+          // @ts-ignore
+          this[key]
+        }
+      }
+    }
   }
 }

@@ -16,7 +16,10 @@ const options = {
       <h1 ref="protagonist">{{ deepValue.who }}</h1>
       <p>{{ deepValue.slogan }}</p>
     </div>
-    <button @click="changeColor('red')">Change protagonist's name</>
+    <button @click="changeColor('red')">Change protagonist's name</button>
+    <p> {{ functionWatchTest }} </p>
+    <p> {{ objectWatchTest }} </p>
+    <button @click="triggerWatchers">trigger Watchers</button>
   `,
   data() {
     return {
@@ -28,6 +31,8 @@ const options = {
         who: 'John Wick',
         slogan: 'You kill my dog. Now you are dead.',
       },
+      functionWatchTest: 0,
+      objectWatchTest: 0,
     }
   },
   beforeCreate() {
@@ -50,6 +55,19 @@ const options = {
     // @ts-ignore
     console.log('mounted', this.name)
   },
+  watch: {
+    // @ts-ignore
+    functionWatchTest(newVal, oldVal) {
+      console.log('function watch', newVal, oldVal)
+    },
+    objectWatchTest: {
+      // @ts-ignore
+      handler(newVal, oldVal) {
+        console.log('object watch', newVal, oldVal)
+      },
+      immediate: true,
+    },
+  },
   methods: {
     changeName() {
       // @ts-ignore
@@ -71,6 +89,12 @@ const options = {
         // @ts-ignore
         this.$refs.protagonist.style.color = color
       }
+    },
+    triggerWatchers() {
+      // @ts-ignore
+      this.functionWatchTest++
+      // @ts-ignore
+      this.objectWatchTest++
     },
   },
 }
