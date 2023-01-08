@@ -8,10 +8,18 @@
       ref="vForm"
     >
       <v-form-item label="username" prop="username">
-        <v-form-input type="text" v-model="userInfo.name" />
+        <v-form-input
+          type="text"
+          v-model="userInfo.username"
+          placeholder="username"
+        />
       </v-form-item>
       <v-form-item label="password" prop="password">
-        <v-form-input type="password" v-model="userInfo.password" />
+        <v-form-input
+          type="password"
+          v-model="userInfo.password"
+          placeholder="password"
+        />
       </v-form-item>
       <v-form-item>
         <button>Submit</button>

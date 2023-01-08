@@ -1,16 +1,40 @@
 <template>
-  <form v-on="$listeners">
-    <slot></slot>
-  </form>
+  <div>
+    <form v-on="$listeners">
+      <slot></slot>
+    </form>
+    <p
+      v-if="validateMessage"
+      :class="{
+        success: status === FORM_STATUS.SUCCESS,
+        error: status === FORM_STATUS.ERROR,
+      }"
+    >
+      {{ validateMessage }}
+    </p>
+  </div>
 </template>
 
 <script>
+const FORM_STATUS = {
+  NO_COMPLETE: 'NO_COMPLETE',
+  SUCCESS: 'SUCCESS',
+  ERROR: 'ERROR',
+}
+
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'VForm',
   provide() {
     return {
       form: this,
+    }
+  },
+  data() {
+    return {
+      validateMessage: '',
+      status: FORM_STATUS.NO_COMPLETE,
+      FORM_STATUS,
     }
   },
   props: {
@@ -22,17 +46,33 @@ export default {
       type: Object,
     },
   },
+  mounted() {
+    this.$on('clearStatus', () => {
+      this.status = FORM_STATUS.NO_COMPLETE
+      this.validateMessage = ''
+    })
+  },
   methods: {
     validate() {
-      this.validateHelper(this.$children, 'VFormItem', () => {
-        console.log('yep')
+      const promises = []
+      this.validateHelper(this.$children, 'VFormItem', (validator) => {
+        promises.push(validator)
       })
+      Promise.all(promises)
+        .then(() => {
+          this.validateMessage = 'Success'
+          this.status = FORM_STATUS.SUCCESS
+        })
+        .catch(() => {
+          this.validateMessage = 'please fill form correctly'
+          this.status = FORM_STATUS.ERROR
+        })
     },
     validateHelper(children, targetComponent, validateCb) {
       if (!children) return
       children.forEach((child) => {
         if (child.$options?.name === targetComponent) {
-          validateCb()
+          validateCb(child.validate())
         } else {
           this.validateHelper(child.$children, targetComponent)
         }
@@ -42,4 +82,13 @@ export default {
 }
 </script>
 
-<style></style>
+<style>
+.error {
+  color: red;
+  font-weight: bold;
+}
+.success {
+  color: green;
+  font-weight: bold;
+}
+</style>

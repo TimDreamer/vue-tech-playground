@@ -7,7 +7,8 @@
 <script>
 export default {
   name: 'VFormInput',
-  inject: ['formItem'],
+  inheritAttrs: false,
+  inject: ['formItem', 'form'],
   props: {
     value: {
       type: String,
@@ -22,6 +23,7 @@ export default {
     onInput(e) {
       this.$emit('input', e.target.value)
       this.formItem.$emit('validate')
+      this.form.$emit('clearStatus')
     },
   },
 }

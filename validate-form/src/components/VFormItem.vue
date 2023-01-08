@@ -4,7 +4,7 @@
     <br />
     <slot></slot>
     <br />
-    <p v-if="error" class="red">{{ error }}</p>
+    <p v-if="error" class="error">{{ error }}</p>
   </div>
 </template>
 
@@ -33,12 +33,30 @@ export default {
     },
   },
   mounted() {
-    this.$on('validate', () => {
+    this.$on('validate', () => this.validate())
+  },
+  methods: {
+    validate() {
+      if (!this.prop) {
+        return Promise.resolve()
+      }
       const value = this.form.model[this.prop]
-      const rule = this.form.rules[this.prop]
-      const schema = new Schema({ rule })
-      schema.validate(value)
-    })
+      const rules = this.form.rules[this.prop]
+      const description = {
+        [this.prop]: rules,
+      }
+
+      const validator = new Schema(description)
+      return validator
+        .validate({ [this.prop]: value })
+        .then(() => {
+          this.error = ''
+        })
+        .catch(({ errors }) => {
+          this.error = errors[0].message
+          throw new Error(errors)
+        })
+    },
   },
 }
 </script>
