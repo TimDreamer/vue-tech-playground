@@ -74,7 +74,7 @@ export default {
         if (child.$options?.name === targetComponent) {
           validateCb(child.validate())
         } else {
-          this.validateHelper(child.$children, targetComponent)
+          this.validateHelper(child.$children, targetComponent, validateCb)
         }
       })
     },
