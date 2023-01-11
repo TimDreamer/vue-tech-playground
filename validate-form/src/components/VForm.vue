@@ -33,6 +33,7 @@ export default {
   data() {
     return {
       validateMessage: '',
+      fields: [],
       status: FORM_STATUS.NO_COMPLETE,
       FORM_STATUS,
     }
@@ -46,6 +47,11 @@ export default {
       type: Object,
     },
   },
+  created() {
+    this.$on('addField', (child) => {
+      this.fields.push(child)
+    })
+  },
   mounted() {
     this.$on('clearStatus', () => {
       this.status = FORM_STATUS.NO_COMPLETE
@@ -54,30 +60,46 @@ export default {
   },
   methods: {
     validate() {
-      const promises = []
-      this.validateHelper(this.$children, 'VFormItem', (validator) => {
-        promises.push(validator)
-      })
-      Promise.all(promises)
-        .then(() => {
-          this.validateMessage = 'Success'
-          this.status = FORM_STATUS.SUCCESS
-        })
-        .catch(() => {
-          this.validateMessage = 'please fill form correctly'
-          this.status = FORM_STATUS.ERROR
-        })
+      if (this.fields.length) {
+        Promise.all(this.fields.map((field) => field.validate()))
+          .then(() => {
+            this.validateMessage = 'Success'
+            this.status = FORM_STATUS.SUCCESS
+          })
+          .catch(() => {
+            this.validateMessage = 'please fill form correctly'
+            this.status = FORM_STATUS.ERROR
+          })
+      } else {
+        this.validateMessage = 'Success'
+        this.status = FORM_STATUS.SUCCESS
+      }
     },
-    validateHelper(children, targetComponent, validateCb) {
-      if (!children) return
-      children.forEach((child) => {
-        if (child.$options?.name === targetComponent) {
-          validateCb(child.validate())
-        } else {
-          this.validateHelper(child.$children, targetComponent, validateCb)
-        }
-      })
-    },
+    // validate() {
+    //   const promises = []
+    //   this.validateHelper(this.$children, 'VFormItem', (validator) => {
+    //     promises.push(validator)
+    //   })
+    //   Promise.all(promises)
+    //     .then(() => {
+    //       this.validateMessage = 'Success'
+    //       this.status = FORM_STATUS.SUCCESS
+    //     })
+    //     .catch(() => {
+    //       this.validateMessage = 'please fill form correctly'
+    //       this.status = FORM_STATUS.ERROR
+    //     })
+    // },
+    // validateHelper(children, targetComponent, validateCb) {
+    //   if (!children) return
+    //   children.forEach((child) => {
+    //     if (child.$options?.name === targetComponent) {
+    //       validateCb(child.validate())
+    //     } else {
+    //       this.validateHelper(child.$children, targetComponent, validateCb)
+    //     }
+    //   })
+    // },
   },
 }
 </script>

@@ -10,10 +10,12 @@
 
 <script>
 import Schema from 'async-validator'
+import Emitter from '../mixins/emitter'
 
 export default {
   name: 'VFormItem',
   inject: ['form'],
+  mixins: [Emitter],
   data() {
     return {
       error: '',
@@ -29,6 +31,7 @@ export default {
   },
   mounted() {
     this.$on('validate', () => this.validate())
+    this.dispatch('VForm', 'addField', this)
   },
   methods: {
     validate() {
