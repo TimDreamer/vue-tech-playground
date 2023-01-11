@@ -14,11 +14,6 @@ import Schema from 'async-validator'
 export default {
   name: 'VFormItem',
   inject: ['form'],
-  provide() {
-    return {
-      formItem: this,
-    }
-  },
   data() {
     return {
       error: '',

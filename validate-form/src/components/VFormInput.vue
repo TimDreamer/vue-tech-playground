@@ -5,10 +5,12 @@
 </template>
 
 <script>
+import Emitter from '../mixins/emitter'
+
 export default {
   name: 'VFormInput',
   inheritAttrs: false,
-  inject: ['formItem', 'form'],
+  mixins: [Emitter],
   props: {
     value: {
       type: String,
@@ -22,8 +24,8 @@ export default {
   methods: {
     onInput(e) {
       this.$emit('input', e.target.value)
-      this.formItem.$emit('validate')
-      this.form.$emit('clearStatus')
+      this.dispatch('VFormItem', 'validate')
+      this.dispatch('VForm', 'clearStatus')
     },
   },
 }
