@@ -5,9 +5,11 @@
     <div class="btn-group">
       <router-link to="/">Home</router-link>
       <router-link to="/about">About</router-link>
-      <button @click="$router.push('/')">use router push to Home page</button>
-      <button @click="$router.push({ path: '/about' })">
-        use router push to About page
+      <button @click="$router.push('/about/profile')">
+        use router push to About page with profile
+      </button>
+      <button @click="$router.push({ path: '/about/preferences' })">
+        use router push to About page with preferences
       </button>
     </div>
   </div>
