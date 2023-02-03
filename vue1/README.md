@@ -1,8 +1,8 @@
-# Analyze Vue source code
+# Analyze Vue (v1) source code
 
 ## Goal
 
-Trying to implement basic concept of Vue:
+Trying to implement basic concept of Vue (v1):
 
 ## What this repo can do
 
