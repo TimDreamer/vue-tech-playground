@@ -1,4 +1,4 @@
-# Analyze Vue (v1) source code
+# Analyze Vue (v2) source code
 
 ## Goal
 
