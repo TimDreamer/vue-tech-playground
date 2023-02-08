@@ -1,25 +1,41 @@
 const express = require('express')
-const { createRenderer } = require('vue-server-renderer')
-const Vue = require('vue')
+const path = require('path')
+const { createBundleRenderer } = require('vue-server-renderer')
 
+const absPath = (filename) => path.resolve(__dirname, filename)
 const app = express()
 const PORT = 1234
-const renderer = createRenderer()
+
+app.use(
+  express.static(absPath('../dist/client'), {
+    index: false,
+  })
+)
+
+const renderer = createBundleRenderer(
+  absPath('../dist/server/vue-ssr-server-bundle.json'),
+  {
+    runInNewContext: false,
+    template: require('fs').readFileSync(
+      absPath('../public/index.html'),
+      'utf-8'
+    ),
+    clientManifest: require(absPath(
+      '../dist/client/vue-ssr-client-manifest.json'
+    )),
+  }
+)
 
 app.get('*', async (req, res) => {
   try {
-    const app = new Vue({
-      template: '<h1>{{title}}</h1>',
-      data() {
-        return {
-          title: 'Hello',
-        }
-      },
-    })
+    const context = {
+      url: req.url,
+    }
 
-    const html = await renderer.renderToString(app)
+    const html = await renderer.renderToString(context)
     res.send(html)
   } catch (err) {
+    console.log(err)
     res.status(404).send('Page not found.')
   }
 })
